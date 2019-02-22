@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-typedef unsigned int usize;
+typedef unsigned int uint;
 
 inline void error(const char *str) {
   std::cout << "error:\n" << str << "\n";

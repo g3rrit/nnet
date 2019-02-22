@@ -5,45 +5,49 @@
 #include <cmath>
 
 namespace Math {
-  template<typename T, usize _rows, usize _cols>
+  template<typename T>
   struct Mat {
-    T *elem;
-    bool owned;
+    T     *elem;
+    bool  owned;
+    uint  rows;
+    uint  cols;
 
-    Mat() {
-      elem = new T[_rows * _cols];
-      owned = true;
-    }
+    Mat(uint _rows, uint _cols) 
+      : elem(new T[_rows * _cols]),
+        owned(true),
+        rows(_rows),
+        cols(_cols) {}
+
+    Mat(uint _rows, uint _cols, T *buffer)
+      : elem(buffer),
+        owned(false),
+        rows(_rows),
+        cols(_cols) {}
+
     ~Mat() {
       if(owned) {
         delete []elem;
       }
     }
 
-    inline T get(usize _row, usize _col) {
-      if(_row >= _rows || _col >= _cols) {
+    inline T get(uint _row, uint _col) {
+      if(_row >= rows || _col >= cols) {
         error("mat get");
       }
-      return elem[_cols * _row + _col];
+      return elem[cols * _row + _col];
     }
-    inline void set(usize _row, usize _col, T val) {
-      if(_row >= _rows || _col >= _cols) {
+    inline void set(uint _row, uint _col, T val) {
+      if(_row >= rows || _col >= cols) {
         error("mat set");
       }
-      elem[_cols * _row + _col] = val;
-    }
-    inline usize rows() {
-      return _rows;
-    }
-    inline usize cols() {
-      return _cols; 
+      elem[cols * _row + _col] = val;
     }
 
     friend std::ostream& operator<<(std::ostream &os, Mat &m) {
       os << "Mat:\n";
-      for(int i = 0; i < m.rows(); i++) {
+      for(uint i = 0; i < m.rows; i++) {
         os << "| ";
-        for(int n = 0; n < m.cols(); n++) {
+        for(uint n = 0; n < m.cols; n++) {
           os << m.get(i, n) << " ";
         }
         os << "|\n";
@@ -52,40 +56,50 @@ namespace Math {
     }
   };
   
-  template<typename T, usize _rows>
-  struct Vec : Mat<T, _rows, 1> {
-    inline void set(usize _row, T val){
-      Mat<T, _rows, 1>::set(_row, 0, val);
+  template<typename T>
+  struct Vec : Mat<T> {
+    Vec(uint _rows)
+      : Mat<T>(_rows, 1) {}
+
+    Vec(uint _rows, T *buffer)
+      : Mat<T>(_rows, 1, buffer) {}
+
+    inline void set(uint _row, T val){
+      Mat<T>::set(_row, 0, val);
     }
-    inline T get(usize _row) {
+    inline T get(uint _row) {
       return Mat::get(_row, 0);
     }
   };
 
-  template<typename T, usize _rows, usize _cols, typename F>
-  void for_all(Mat<T, _rows, _cols> &res, Mat<T, _rows, _cols> &m, F &f) {
-    for(usize i = 0; i < _rows; i++) {
-      for(usize n = 0; n < _cols; n++) {
+  template<typename T, typename F>
+  void for_all(Mat<T> &res, Mat<T> &m, F &f) {
+    for(uint i = 0; i < res.rows; i++) {
+      for(uint n = 0; n < res.cols; n++) {
         res.set(i, n, f(m.get(i,n)));
       }
     }
   }
   
-  template<typename T, usize _rows, usize _cols>
-  void add(Mat<T, _rows, _cols> &res, Mat<T, _rows, _cols> &m1, Mat<T, _rows, _cols> &m2) {
-    for(int i = 0; i < _rows; i++) {
-      for(int n = 0; n < _cols; n++) {
+  template<typename T>
+  void add(Mat<T> &res, Mat<T> &m1, Mat<T> &m2) {
+    for(uint i = 0; i < res.rows; i++) {
+      for(uint n = 0; n < res.cols; n++) {
         res.set(i, n, m1.get(i, n) + m2.get(i,n));
       }
     }
   }
 
-  template<typename T, usize _rows, usize _cols, usize _w>
-  void mult(Mat<T, _rows, _cols> &res, Mat<T, _rows, _w> &m1, Mat<T, _w, _cols> &m2) {
-    for(usize i = 0; i < _rows; i++) {
-      for(usize n = 0; n < _cols; n++) {
+  template<typename T>
+  void mult(Mat<T> &res, Mat<T> &m1, Mat<T> &m2) {
+    if(m1.rows != res.rows || m2.cols != res.cols || m1.cols != m2.rows) {
+      error("Mat mult");
+    }
+    uint w = m1.cols;
+    for(uint i = 0; i < res.rows; i++) {
+      for(uint n = 0; n < res.cols; n++) {
         T val{ 0 };
-        for(usize x = 0; x < _w; x++) {
+        for(uint x = 0; x < w; x++) {
           val += m1.get(i, x) * m2.get(x, n);
         }
         res.set(i, n, val);
@@ -94,8 +108,8 @@ namespace Math {
   }
 
   //normalizes all values in matrix
-  template<typename T, usize _rows, usize _cols>
-  void sigmoid(Mat<T, _rows, _cols> &res, Mat<T, _rows, _cols> &m) {
+  template<typename T>
+  void sigmoid(Mat<T> &res, Mat<T> &m) {
     for_all(res, m, [] (T val) {
       return (1 + tanh(val/2))/2;
     });

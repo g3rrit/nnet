@@ -5,9 +5,9 @@ using Math::Vec;
 using Math::Mat;
 
 int main() {
-  Vec<double, 2> v1;
-  Vec<double, 2> v2;
-  Mat<double, 2, 2> m;
+  Vec<double> v1{ 2 };
+  Vec<double> v2{ 2 };
+  Mat<double> m{ 2, 2 };
 
   m.set(0,0, 1);
   m.set(0,1, 2);
@@ -20,7 +20,7 @@ int main() {
   v2.set(0, 5);
   v2.set(1, 10);
 
-  Vec<double, 2> res;
+  Vec<double> res{ 2 };
   add(res, v1, v2);
 
   std::cout << v1 << "\n" << v2 << "\n" << m << "\n";
