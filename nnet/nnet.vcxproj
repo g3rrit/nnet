@@ -117,11 +117,13 @@
   <ItemGroup>
     <ClInclude Include="Math.h" />
     <ClInclude Include="Nnet.h" />
+    <ClInclude Include="NUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cc" />
     <ClCompile Include="Math.cc" />
     <ClCompile Include="Nnet.cc" />
+    <ClCompile Include="NUtil.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

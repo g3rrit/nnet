@@ -43,6 +43,14 @@ namespace Math {
       elem[cols * _row + _col] = val;
     }
 
+    inline T *data() {
+      return elem;
+    }
+    
+    inline uint size() {
+      return rows * cols;
+    }
+
     friend std::ostream& operator<<(std::ostream &os, Mat &m) {
       os << "Mat:\n";
       for(uint i = 0; i < m.rows; i++) {
@@ -68,7 +76,7 @@ namespace Math {
       Mat<T>::set(_row, 0, val);
     }
     inline T get(uint _row) {
-      return Mat::get(_row, 0);
+      return Mat<T>::get(_row, 0);
     }
   };
 
@@ -110,8 +118,9 @@ namespace Math {
   //normalizes all values in matrix
   template<typename T>
   void sigmoid(Mat<T> &res, Mat<T> &m) {
-    for_all(res, m, [] (T val) {
+    auto sf = [] (T val) {
       return (1 + tanh(val/2))/2;
-    });
+    };
+    for_all(res, m, sf);
   }
 }

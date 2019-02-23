@@ -21,6 +21,9 @@
     <ClInclude Include="Nnet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math.cc">
@@ -30,6 +33,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Nnet.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NUtil.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

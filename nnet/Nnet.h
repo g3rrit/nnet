@@ -6,84 +6,52 @@
 #include "std.h"
 #include "Math.h"
 
+#include <vector>
+
 using Math::Vec;
 using Math::Mat;
 using std::vector;
 
-//in_nodes := amount of input nodes
-//nodes    := amount of nodes in layer
-template<typename T>
-struct Layer {
-  Mat<T> w;
-  Vec<T> b;
-  Vec<T> a;
+namespace ML {
+  //in_nodes := amount of input nodes
+  //nodes    := amount of nodes in layer
+  struct Layer {
+    Mat<f64> w;
+    Vec<f64> b;
+    Vec<f64> a;
 
-  Layer(uint in_nodes, uint nodes)
-    : w(nodes, in_nodes),
-      b(nodes),
-      a(nodes) {}
+    Layer(uint in_nodes, uint nodes);
+    Layer(uint in_nodes, uint nodes, f64 *buffer);
+    Vec<f64> *get_active(Vec<f64> &input);
+  };
 
-  Layer(uint in_nodes, uint nodes, T *buffer) 
-    : w(nodes, in_nodes, buffer),
-      b(nodes, buffer + (in_nodes * nodes)),
-      a(nodes) {}
+  struct Layer_Builder {
+    vector<Layer> *lv;
+    uint          p_nodes;
 
-  Vec<T> *get_activ(Vec<T> &input) {
-    mult(a, w, input);
-    add(a, b);
-    sigmoid(a, a);
-    return &a;
-  }
-};
+    Layer_Builder(uint s_nodes);
+    void add(uint nodes, f64 *data);
+    vector<Layer> *build();
+  };
 
-template<typename T>
-struct Layer_Builder {
-  vector<Layer<T>> *lv;
-  uint             p_nodes;
+  struct Nnet_Structure : public vector<uint> {
+    uint data_size();
+  };
 
-  Layer_Builder(uint s_nodes) 
-     : p_nodes(s_nodes) {
-    lv = new vector<Layer<T>>();
-  }
-  void add(uint nodes, T *data) {
-    lv.emplace_back(p_nodes, nodes, data);
-    p_nodes = nodes;
-  }
-  vector<Layer<T>> *build() {
-    return lv;
-  }
-};
+  struct Nnet {
+    f64            *data;
+    uint           data_size;
+    Nnet_Structure structure;
+    vector<Layer>  *lv;
 
-template<typename T = double>
-struct Nnet {
-  T                *data;
-  vector<Layer<T>> *lv;
+    Nnet(Nnet_Structure _structure);
+    ~Nnet();
 
-  Nnet(uint in_nodes, vector<Layer<T>> *_lv, T *_data)
-    : data(_data),
-      lv(_lv) {}
+    Vec<f64> *get_output(Vec<f64> &in);
+  };
 
-  ~Nnet() {
-    delete lv;
-  }
+  f64 cost(Vec<f64> &v, Vec<f64> &exp);
 
-  Vec<T> *get_output(Vec<T> &in) {
-    Vec<T> *current = &in;
-    for(Layer<T> &layer : lv) {
-      current = layer.get_active(current);
-    }
-    return current;
-  }
-};
-
-template<typename T>
-double cost(Vec<T> &v, Vec<T> &exp) {
-  double cost = 0;
-  if(v.rows != exp.rows) {
-    error("get_cost");
-  }
-  for(uint i = 0; i < v.rows; i++) {
-    cost += (v.get(i) - exp.get(i)) * (v.get(i) - exp.get(i));
-  }
-  return cost;
+  std::ostream &operator<<(std::ostream &os, Layer &l);
+  std::ostream &operator<<(std::ostream& os, Nnet &n);
 }

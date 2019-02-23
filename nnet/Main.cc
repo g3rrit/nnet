@@ -1,8 +1,13 @@
 #include "Math.h"
 #include <iostream>
 
+#include "Nnet.h"
+#include "NUtil.h"
+
 using Math::Vec;
 using Math::Mat;
+using ML::Nnet_Structure;
+using ML::Nnet;
 
 int main() {
   Vec<double> v1{ 2 };
@@ -29,6 +34,19 @@ int main() {
   mult(res, m, v1);
 
   std::cout << "res:\n" << res << "\n";
+
+  Nnet_Structure structure;
+  structure.push_back(10);
+  structure.push_back(20);
+  structure.push_back(10);
+  structure.push_back(30);
+  Nnet net{structure};
+  rand_net(net, 1);
+  std::cout << net;
+  rand_net(net, 0.1);
+  std::cout << net;
+  rand_net(net, 0.3);
+  std::cout << net;
 
   getchar();
   return 0;
