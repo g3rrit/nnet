@@ -1,6 +1,13 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
+#include <vector>
+#include <string>
+
+using std::pair;
+using std::vector;
+using std::string;
 
 typedef unsigned int uint;
 
