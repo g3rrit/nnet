@@ -15,12 +15,11 @@ namespace ML {
       vec_size(_vec_size),
       data_size(_vec_size * _pair_count) {
     data = new f64[data_size];
-    v.reserve(pair_count);
   
     uint offset = 0;
     for(uint i = 0; i < pair_count; i++) {
-      v.emplace_back(_vec_size, data + offset);
-      offset += vec_size;
+      v.push_back(std::make_pair(Vec<f64>(_vec_size, data + offset), Vec<f64>(_vec_size, data + offset + vec_size)));
+      offset += vec_size * 2;
     }
   }
 

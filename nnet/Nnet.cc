@@ -21,21 +21,6 @@ namespace ML {
   }
 
 
-  Layer_Builder::Layer_Builder(uint s_nodes) 
-    : p_nodes(s_nodes) {
-    lv = new vector<Layer>();
-    lv->reserve(20); // TODO: figure out why vector doesnt automatically reserve space on emplace back
-  }
-
-  void Layer_Builder::add(uint nodes, f64 *data) {
-    lv->emplace_back(p_nodes, nodes, data);
-    p_nodes = nodes;
-  }
-
-  vector<Layer> *Layer_Builder::build() {
-    return lv;
-  }
-
   uint Nnet_Structure::data_size() {
     auto si = std::begin(*this);
     uint size = 0;
@@ -47,6 +32,51 @@ namespace ML {
     return size;
   }
 
+  vector<Layer> *Nnet_Structure::build(f64 *data) {
+    auto si = std::begin(*this);
+    uint prev = *si;
+
+    vector<Layer> *lv = new vector<Layer>();
+    lv->reserve(20); //TODO bug if this line is removed
+    //prob because reserve doesent extend the vector
+    
+    uint data_offset = 0;
+    for(si++; si != std::end(*this); si++) {
+      lv->emplace_back(prev, *si, data + data_offset);
+      data_offset += prev * (*si) + (*si);
+      prev = *si;
+    }    
+    return lv;
+  }
+
+  void Nnet_Structure::load(FILE *file) {
+    this->clear();
+    
+    uint num_layers = 0;
+    if(fread(&num_layers, sizeof(uint), 1, file) != 1) {
+      error("unable to read number of layers");
+    }
+    uint nodes = 0;
+    for(uint i = 0; i < num_layers; i++) {
+      if(fread(&nodes, sizeof(uint), 1, file) != 1) {
+        error("unable to read number of nodes");
+      }
+      this->push_back(nodes);
+    }
+  }
+
+  void Nnet_Structure::save(FILE *file) {
+    uint num_layers = this->size();
+    if(fwrite(&num_layers, sizeof(uint), 1, file) != 1) {
+      error("unable to write number of layers");
+    }
+    for(uint &nodes : *this) {
+      if(fwrite(&nodes, sizeof(uint), 1, file) != 1) {
+        error("unable to write number of nodes");
+      }
+    }
+  }
+
 
   Nnet::Nnet(Nnet_Structure _structure)
     : structure(_structure),
@@ -54,17 +84,18 @@ namespace ML {
     data_size = structure.data_size();
     data = new f64[data_size];
     
-    //build layers
-    auto si = std::begin(structure);
-    uint prev = *si;
-    Layer_Builder l_builder{ prev };    
-    uint data_offset = 0;
-    for(si++; si != std::end(structure); si++) {
-      l_builder.add(*si, data + data_offset);
-      data_offset += prev * (*si) + (*si);
-      prev = *si;
+    lv = structure.build(data);
+  }
+
+  Nnet::Nnet(string &path) 
+    : data(0),
+      data_size(0),
+      lv(0) {
+    FILE *file = fopen(path.c_str(), "rb");
+    if(!file) {
+      error("unable to open nnet file");
     }
-    lv = l_builder.build();
+    load(file);
   }
 
   Nnet::~Nnet() {
@@ -78,6 +109,27 @@ namespace ML {
       current = layer.get_active(*current);
     }
     return current;
+  }
+
+  void Nnet::load(FILE *file) {
+    structure.load(file);
+    data_size = structure.data_size();
+    delete []data;
+    data = new f64[data_size];
+
+    if(fread(data, sizeof(uint), data_size, file) != data_size) {
+      error("unable to read data");
+    }
+    
+    delete lv;
+    lv = structure.build(data);
+  }
+
+  void Nnet::save(FILE *file) {
+    structure.save(file);
+    if(fwrite(data, sizeof(uint), data_size, file) != data_size) {
+      error("unable to write data");
+    }
   }
 
 

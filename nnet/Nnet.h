@@ -25,17 +25,11 @@ namespace ML {
     Vec<f64> *get_active(Vec<f64> &input);
   };
 
-  struct Layer_Builder {
-    vector<Layer> *lv;
-    uint          p_nodes;
-
-    Layer_Builder(uint s_nodes);
-    void add(uint nodes, f64 *data);
-    vector<Layer> *build();
-  };
-
   struct Nnet_Structure : public vector<uint> {
     uint data_size();
+    vector<Layer> *build(f64 *data);
+    void load(FILE *file);
+    void save(FILE *file);
   };
 
   struct Nnet {
@@ -45,9 +39,13 @@ namespace ML {
     vector<Layer>  *lv;
 
     Nnet(Nnet_Structure _structure);
+    Nnet(string &path);
     ~Nnet();
 
     Vec<f64> *get_output(Vec<f64> &in);
+
+    void load(FILE *file);
+    void save(FILE *file);
   };
 
   f64 cost(Vec<f64> &v, Vec<f64> &exp);
