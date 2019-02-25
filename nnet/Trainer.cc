@@ -1,10 +1,10 @@
-#include "Trainer.h"
+#include "trainer.h"
 
 #include <cstdio>
 #include <thread>
 #include <ctime>
 
-#include "NUtil.h"
+#include "nutil.h"
 
 using std::thread;
 

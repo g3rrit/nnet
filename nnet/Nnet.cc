@@ -1,5 +1,5 @@
-#include "Nnet.h"
-#include "Math.h"
+#include "nnet.h"
+#include "vmath.h"
 
 namespace ML {
 

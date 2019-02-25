@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Math.h"
-#include "Nnet.h"
-#include "std.h"
+#include "vmath.h"
+#include "nnet.h"
+#include "mstd.h"
 
 #define BIAS_MIN -50.
 #define BIAS_MAX 50.

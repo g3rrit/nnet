@@ -15,33 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Math.h">
+    <ClInclude Include="vmath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Nnet.h">
+    <ClInclude Include="nnet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NUtil.h">
+    <ClInclude Include="nutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Trainer.h">
+    <ClInclude Include="trainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mstd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Math.cc">
+    <ClCompile Include="trainer.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cc">
+    <ClCompile Include="nutil.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Nnet.cc">
+    <ClCompile Include="nnet.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NUtil.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Trainer.cc">
+    <ClCompile Include="main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

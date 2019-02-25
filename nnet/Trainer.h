@@ -1,8 +1,8 @@
 #pragma once
 
-#include "std.h"
-#include "Math.h"
-#include "Nnet.h"
+#include "mstd.h"
+#include "vmath.h"
+#include "nnet.h"
 
 using Math::Vec;
 

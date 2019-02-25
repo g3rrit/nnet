@@ -1,8 +1,8 @@
-#include "Math.h"
+#include "vmath.h"
 #include <iostream>
 
-#include "Nnet.h"
-#include "NUtil.h"
+#include "nnet.h"
+#include "nutil.h"
 
 using Math::Vec;
 using Math::Mat;

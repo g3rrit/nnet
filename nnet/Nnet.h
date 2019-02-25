@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 
-#include "std.h"
-#include "Math.h"
+#include "mstd.h"
+#include "vmath.h"
 
 #include <vector>
 

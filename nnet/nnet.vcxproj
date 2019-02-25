@@ -119,17 +119,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="Nnet.h" />
-    <ClInclude Include="NUtil.h" />
-    <ClInclude Include="Trainer.h" />
+    <ClInclude Include="mstd.h" />
+    <ClInclude Include="vmath.h" />
+    <ClInclude Include="nnet.h" />
+    <ClInclude Include="nutil.h" />
+    <ClInclude Include="trainer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cc" />
-    <ClCompile Include="Math.cc" />
-    <ClCompile Include="Nnet.cc" />
-    <ClCompile Include="NUtil.cc" />
-    <ClCompile Include="Trainer.cc" />
+    <ClCompile Include="main.cc" />
+    <ClCompile Include="nnet.cc" />
+    <ClCompile Include="nutil.cc" />
+    <ClCompile Include="trainer.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
