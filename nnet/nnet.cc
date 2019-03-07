@@ -139,7 +139,7 @@ namespace ML {
       error("get_cost");
     }
     for(uint i = 0; i < v.rows; i++) {
-      cost += (v.get(i) - exp.get(i)) * (v.get(i) - exp.get(i));
+      cost += ((v.get(i) - exp.get(i)) * (v.get(i) - exp.get(i))) / v.rows;
     }
     return cost;
   }
