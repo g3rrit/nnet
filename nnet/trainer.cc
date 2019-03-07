@@ -10,16 +10,17 @@ using std::thread;
 
 namespace ML {
 
-  Training_Data::Training_Data(uint _pair_count, uint _vec_size)
+  Training_Data::Training_Data(uint _pair_count, uint _in_vec_size, uint _out_vec_size)
     : pair_count(_pair_count),
-      vec_size(_vec_size),
-      data_size(_vec_size * _pair_count) {
+      in_vec_size(_in_vec_size),
+      out_vec_size(_out_vec_size),
+      data_size((_in_vec_size + _out_vec_size) * _pair_count) {
     data = new f64[data_size];
   
     uint offset = 0;
     for(uint i = 0; i < pair_count; i++) {
-      v.push_back(std::make_pair(Vec<f64>(_vec_size, data + offset), Vec<f64>(_vec_size, data + offset + vec_size)));
-      offset += vec_size * 2;
+      v.push_back(std::make_pair(Vec<f64>(_in_vec_size, data + offset), Vec<f64>(_out_vec_size, data + offset + in_vec_size)));
+      offset += in_vec_size + out_vec_size;
     }
   }
 
@@ -58,15 +59,19 @@ namespace ML {
       error("unable to read training_data");
     }
     uint pair_count = 0;
-    uint vec_size = 0;
+    uint in_vec_size = 0;
+    uint out_vec_size = 0;
     if(fread(&pair_count, sizeof(uint), 1, file) != 1) {
       error("unable to read pair_count");
     }
-    if(fread(&vec_size, sizeof(uint), 1, file) != 1) {
-      error("unable to read vec_size");
+    if(fread(&in_vec_size, sizeof(uint), 1, file) != 1) {
+      error("unable to read in_vec_size");
+    }
+    if(fread(&out_vec_size, sizeof(uint), 1, file) != 1) {
+      error("unable to read out_vec_size");
     }
 
-    t_data = new Training_Data(pair_count, vec_size);
+    t_data = new Training_Data(pair_count, in_vec_size, out_vec_size);
     if(fread(t_data->data, sizeof(f64), t_data->data_size, file) != t_data->data_size) {
       error("unable to read training data");
     }
@@ -85,8 +90,11 @@ namespace ML {
     if(fwrite(&t_data->pair_count, sizeof(uint), 1, file) != 1) {
       error("unable to save pair_count");
     }
-    if(fwrite(&t_data->vec_size, sizeof(uint), 1, file) != 1) {
-      error("unable to save vec_size");
+    if(fwrite(&t_data->in_vec_size, sizeof(uint), 1, file) != 1) {
+      error("unable to save in_vec_size");
+    }
+    if(fwrite(&t_data->out_vec_size, sizeof(uint), 1, file) != 1) {
+      error("unable to save out_vec_size");
     }
     if(fwrite(t_data->data, sizeof(f64), t_data->data_size, file) != t_data->data_size) {
       error("unable to save training_data");
@@ -155,9 +163,12 @@ namespace ML {
     }
   }
 
-  vector<f64> *Trainer::train(uint block_size, uint rounds) {
+  vector<f64> *Trainer::train(uint block_size, uint rounds, f64 t_factor) {
     vector<f64> *res = calc_costv(block_size, rounds);
     dup_best();
+    for(Nnet &net : netv) {
+      rand_net(net, t_factor);
+    }
     return res;
   }
 }

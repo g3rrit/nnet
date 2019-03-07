@@ -13,10 +13,11 @@ namespace ML {
     f64              *data;
     vector<vec_pair> v;
     uint             pair_count;
-    uint             vec_size;
+    uint             in_vec_size;
+    uint             out_vec_size;
     uint             data_size;
 
-    Training_Data(uint _pair_count, uint _vec_size);
+    Training_Data(uint _pair_count, uint _in_vec_size, uint _out_vec_size);
     ~Training_Data();
 
     void sample(vector<vec_pair*> &s, uint sample_size);
@@ -40,6 +41,6 @@ namespace ML {
     Nnet *get_best();
     void dup_best();
 
-    vector<f64> *train(uint block_size, uint rounds);
+    vector<f64> *train(uint block_size, uint rounds, f64 t_factor);
   };
 }
