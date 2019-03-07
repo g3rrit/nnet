@@ -31,6 +31,7 @@ namespace ML {
     vector<f64>    costv;
 
     Trainer(Nnet_Structure _structure, uint net_count);
+    Trainer(Nnet &net, uint net_count);
     ~Trainer();
 
     void set_training_data(Training_Data *_t_data);

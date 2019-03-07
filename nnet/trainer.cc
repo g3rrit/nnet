@@ -42,6 +42,20 @@ namespace ML {
       t_data(0) {
     netv.reserve(net_count);
     costv.reserve(net_count);
+    for(uint i = 0; i < net_count; i++) {
+      netv.emplace_back(structure);
+      costv.push_back(0);
+    }
+  }
+
+  Trainer::Trainer(Nnet &net, uint net_count) {
+    netv.reserve(net_count);
+    costv.reserve(net_count);
+    for(uint i = 0; i < net_count; i++) {
+      netv.emplace_back(net.structure);
+      copy(netv.at(i), net);
+      costv.push_back(0);
+    }
   }
 
   Trainer::~Trainer() {
