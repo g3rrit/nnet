@@ -141,7 +141,7 @@ namespace ML {
       t_data->sample(td, block_size);
 
       for(uint n = 0; n < netv.size(); n++) {
-        thread_v.at(n) = thread(tf, &netv.at(n), &td, &costv.at(n));
+        thread_v.emplace_back(tf, &netv.at(n), &td, &costv.at(n));
       }
       for(uint n = 0; n < netv.size(); n++) {
         thread_v.at(n).join();
