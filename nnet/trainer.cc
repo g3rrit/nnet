@@ -157,7 +157,7 @@ namespace ML {
 
   Nnet *Trainer::get_best() {
     Nnet *res = nullptr;
-    f64 min_cost = 10000; //TODO
+    f64 min_cost = F64_MAX;
     for(uint i = 0; i < netv.size(); i++) {
       if(costv.at(i) <= min_cost) {
         res = &netv.at(i);
