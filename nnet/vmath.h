@@ -123,4 +123,14 @@ namespace Math {
     };
     for_all(res, m, sf);
   }
+
+  template<typename T>
+  void avg(Mat<T> &res, Mat<T> &m) {
+    T count = m.rows * m.cols;
+    for(uint i = 0; i < m.rows; i++) {
+      for(uint n = 0; n < m.cols; n++) {
+        res.set(i, n, m.get(i, n) / count);
+      }
+    }
+  }
 }
