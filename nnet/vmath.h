@@ -133,4 +133,13 @@ namespace Math {
       }
     }
   }
+
+  template<typename T>
+  void div(Mat<T> &res, Mat<T> &m, T val) {
+    for(uint i = 0; i < m.rows; i++) {
+      for(uint n = 0; n < m.cols; n++) {
+        res.set(i, n, m.get(i, n) / val);
+      }
+    }
+  }
 }
