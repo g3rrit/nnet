@@ -20,7 +20,7 @@ namespace ML {
       if(data[i] > max || data[i] < min) {
         data[i] = (max - min)/2;
       }
-      val = ((static_cast<f64>rand())/RAND_MAX)* (max - min) * factor)/2;
+      val = ((static_cast<f64>(rand())/RAND_MAX)* (max - min) * factor)/2;
       data[i] = data[i] + val <= max ? data[i] + val : data[i] - val;
     }
   }
