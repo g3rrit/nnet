@@ -16,7 +16,7 @@ namespace ML {
   Vec<f64> *Layer::get_active(Vec<f64> &input) {
     mult(a, w, input);
     add(a, a, b);
-    div(a, a, (f64)input.rows);
+    //div(a, a, (f64)input.rows);
     sigmoid(a, a);
     return &a;
   }

@@ -14,13 +14,13 @@ namespace ML {
     if(factor > 1 || factor < 0) {
       error("rand_float_array");
     }
-    srand(time(0));
+    //srand(time(0));
     f64 val = 0;
     for(uint i = 0; i < size; i++) {
       if(data[i] > max || data[i] < min) {
         data[i] = (max - min)/2;
       }
-      val = (((f64) rand()/RAND_MAX)* (max - min) * factor)/2;
+      val = ((static_cast<f64>rand())/RAND_MAX)* (max - min) * factor)/2;
       data[i] = data[i] + val <= max ? data[i] + val : data[i] - val;
     }
   }
