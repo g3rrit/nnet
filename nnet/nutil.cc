@@ -10,27 +10,27 @@ namespace ML {
     memcpy(dest.data, src.data, dest.data_size);
   }
 
-  void rand_float_array(f64 *data, uint size, f64 min, f64 max, f64 factor) {
+  void rand_float_array(u64 *data, uint size, u64 min, u64 max, f64 factor) {
     if(factor > 1 || factor < 0) {
       error("rand_float_array");
     }
     //srand(time(0));
-    f64 val = 0;
+    u64 val = 0;
     for(uint i = 0; i < size; i++) {
       if(data[i] > max || data[i] < min) {
         data[i] = (max - min)/2;
       }
-      val = ((static_cast<f64>(rand())/RAND_MAX)* (max - min) * factor)/2;
+      val = ((static_cast<f64>(rand())/RAND_MAX) * factor * (max - min))/2;
       data[i] = data[i] + val <= max ? data[i] + val : data[i] - val;
     }
   }
 
   void rand_weight(Layer &layer, f64 factor) {
-    rand_float_array(layer.w.data(), layer.w.size(), WEIGHT_MIN, WEIGHT_MAX, factor);
+    rand_float_array(layer.w.data(), layer.w.size(), 0, U64_MAX / layer.w.cols, factor);
   }
 
   void rand_bias(Layer &layer, f64 factor) {
-    rand_float_array(layer.b.data(), layer.b.size(), BIAS_MIN, BIAS_MAX, factor);
+    rand_float_array(layer.b.data(), layer.b.size(), 0, U64_MAX, factor);
   }
 
   void rand_layer(Layer &layer, f64 factor) {

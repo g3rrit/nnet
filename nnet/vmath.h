@@ -142,4 +142,15 @@ namespace Math {
       }
     }
   }
+  
+  //res matrix consists of 0 and 1 if element in m is >= element in b
+  template<typename T>
+  void bin_norm(Mat<T> &res, Mat<T> &m, Mat<T> &b) {
+    T val = 0;
+    for(uint i = 0; i < m.rows; i++) {
+      for(uint n = 0; n < m.cols; n++) {
+        res.set(i, n, (m.get(i,n) >= b.get(i,n) ? 1 : 0));
+      }
+    }
+  }
 }

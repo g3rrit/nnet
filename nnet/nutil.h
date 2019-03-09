@@ -4,16 +4,11 @@
 #include "nnet.h"
 #include "mstd.h"
 
-#define BIAS_MIN -50.
-#define BIAS_MAX 50.
-#define WEIGHT_MIN 0.
-#define WEIGHT_MAX 1.
-
 namespace ML {
 
   void copy(Nnet &dest, Nnet &src);
 
-  void rand_float_array(f64 *data, uint size, f64 min, f64 max, f64 factor);
+  void rand_float_array(u64 *data, uint size, u64 min, u64 max, f64 factor);
 
   void rand_weight(Layer &layer, f64 factor);
 

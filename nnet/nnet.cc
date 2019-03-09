@@ -8,16 +8,17 @@ namespace ML {
       b(nodes),
       a(nodes) {}
 
-  Layer::Layer(uint in_nodes, uint nodes, f64 *buffer) 
+  Layer::Layer(uint in_nodes, uint nodes, u64 *buffer) 
     : w(nodes, in_nodes, buffer),
       b(nodes, buffer + (in_nodes * nodes)),
       a(nodes) {}
 
-  Vec<f64> *Layer::get_active(Vec<f64> &input) {
+  Vec<u64> *Layer::get_active(Vec<u64> &input) {
     mult(a, w, input);
-    add(a, a, b);
-    //div(a, a, (f64)input.rows);
-    sigmoid(a, a);
+    bin_norm(a, a, b);
+    //add(a, a, b);
+    //div(a, a, (u64)input.rows);
+    //sigmoid(a, a);
     return &a;
   }
 
@@ -33,7 +34,7 @@ namespace ML {
     return size;
   }
 
-  vector<Layer> *Nnet_Structure::build(f64 *data) {
+  vector<Layer> *Nnet_Structure::build(u64 *data) {
     auto si = std::begin(*this);
     uint prev = *si;
 
@@ -83,7 +84,7 @@ namespace ML {
     : structure(_structure),
       data_size(0) {
     data_size = structure.data_size();
-    data = new f64[data_size];
+    data = new u64[data_size];
     
     lv = structure.build(data);
   }
@@ -104,8 +105,8 @@ namespace ML {
     delete lv;
   }
 
-  Vec<f64> *Nnet::get_output(Vec<f64> &in) {
-    Vec<f64> *current = &in;
+  Vec<u64> *Nnet::get_output(Vec<u64> &in) {
+    Vec<u64> *current = &in;
     for(Layer &layer : *lv) {
       current = layer.get_active(*current);
     }
@@ -116,9 +117,9 @@ namespace ML {
     structure.load(file);
     data_size = structure.data_size();
     delete []data;
-    data = new f64[data_size];
+    data = new u64[data_size];
 
-    if(fread(data, sizeof(uint), data_size, file) != data_size) {
+    if(fread(data, sizeof(u64), data_size, file) != data_size) {
       error("unable to read data");
     }
     
@@ -134,13 +135,14 @@ namespace ML {
   }
 
 
-  f64 cost(Vec<f64> &v, Vec<f64> &exp) {
-    f64 cost = 0;
+  u64 cost(Vec<u64> &v, Vec<u64> &exp) {
+    u64 cost = 0;
     if(v.rows != exp.rows) {
       error("get_cost");
     }
     for(uint i = 0; i < v.rows; i++) {
-      cost += ((v.get(i) - exp.get(i)) * (v.get(i) - exp.get(i)));
+      cost += v.get(i) * exp.get(i) == 0 ? 1 : 0;
+        //((v.get(i) - exp.get(i)) * (v.get(i) - exp.get(i)));
     }
     return cost;
   }

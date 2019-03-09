@@ -15,11 +15,11 @@ namespace ML {
       in_vec_size(_in_vec_size),
       out_vec_size(_out_vec_size),
       data_size((_in_vec_size + _out_vec_size) * _pair_count) {
-    data = new f64[data_size];
+    data = new u64[data_size];
   
     uint offset = 0;
     for(uint i = 0; i < pair_count; i++) {
-      v.push_back(std::make_pair(Vec<f64>(_in_vec_size, data + offset), Vec<f64>(_out_vec_size, data + offset + in_vec_size)));
+      v.push_back(std::make_pair(Vec<u64>(_in_vec_size, data + offset), Vec<u64>(_out_vec_size, data + offset + in_vec_size)));
       offset += in_vec_size + out_vec_size;
     }
   }
@@ -86,7 +86,7 @@ namespace ML {
     }
 
     t_data = new Training_Data(pair_count, in_vec_size, out_vec_size);
-    if(fread(t_data->data, sizeof(f64), t_data->data_size, file) != t_data->data_size) {
+    if(fread(t_data->data, sizeof(u64), t_data->data_size, file) != t_data->data_size) {
       error("unable to read training data");
     }
 
@@ -110,26 +110,26 @@ namespace ML {
     if(fwrite(&t_data->out_vec_size, sizeof(uint), 1, file) != 1) {
       error("unable to save out_vec_size");
     }
-    if(fwrite(t_data->data, sizeof(f64), t_data->data_size, file) != t_data->data_size) {
+    if(fwrite(t_data->data, sizeof(u64), t_data->data_size, file) != t_data->data_size) {
       error("unable to save training_data");
     }
 
     fclose(file);
   }
 
-  vector<f64> *Trainer::calc_costv(uint block_size, uint rounds) {
+  vector<u64> *Trainer::calc_costv(uint block_size, uint rounds) {
     //lets make this threaded what could possibly go wrong
-    auto tf = [] (Nnet *net, vector<vec_pair*> *td, f64 *c) {
-                f64 temp_cost = 0;
-                uint count = 0;
+    auto tf = [] (Nnet *net, vector<vec_pair*> *td, u64 *c) {
+                u64 temp_cost = 0;
+                u64 count = 0;
                 for(vec_pair *vp : *td) {
                   temp_cost += cost(*net->get_output(vp->first), vp->second);
                   count++;
                 }
-                *c += temp_cost/(f64)count;
+                *c += temp_cost/count;
               };
 
-    for(f64 &cost : costv) {
+    for(u64 &cost : costv) {
       cost = 0;
     }
 
@@ -148,7 +148,7 @@ namespace ML {
       }
     }
     //average out cost vector
-    for(f64 &cost : costv) {
+    for(u64 &cost : costv) {
       cost /= rounds;
     }
 
@@ -157,7 +157,7 @@ namespace ML {
 
   Nnet *Trainer::get_best() {
     Nnet *res = nullptr;
-    f64 min_cost = F64_MAX;
+    u64 min_cost = U64_MAX;
     for(uint i = 0; i < netv.size(); i++) {
       if(costv.at(i) <= min_cost) {
         res = &netv.at(i);
@@ -177,8 +177,8 @@ namespace ML {
     }
   }
 
-  vector<f64> *Trainer::train(uint block_size, uint rounds, f64 t_factor) {
-    vector<f64> *res = calc_costv(block_size, rounds);
+  vector<u64> *Trainer::train(uint block_size, uint rounds, f64 t_factor) {
+    vector<u64> *res = calc_costv(block_size, rounds);
     dup_best();
     for(Nnet &net : netv) {
       rand_net(net, t_factor);
